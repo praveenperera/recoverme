@@ -6,8 +6,34 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# cli
+ctrlc = "3.4.1"
+
+# parallel 
+crossbeam = "0.8.2"
+rayon = "1.8.0"
+
+# utils
 derive_more = "0.99.17"
 itertools = "0.11.0"
-rayon = "1.8.0"
+hex = "0.4.3"
+
+# serde
 serde = { version = "1.0.188", features = ["derive"] }
 serde_json = "1.0.107"
+
+# bitcoin
+bip32 = "0.5.1"
+bip39 = "2.0.0"
+
+
+# error
+eyre = "0.6.8"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+
+[dev-dependencies]
+pretty_assertions_sorted = "1.2"
