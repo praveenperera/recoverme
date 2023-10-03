@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cargo build --release;  
+rm  /usr/local/bin/combinator; 
+ln -s "$(pwd)/target/release/combinator" /usr/local/bin

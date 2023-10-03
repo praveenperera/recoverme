@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use combinator::{permutations::Permutations, Words};
+use combinator::{multi_cartesian_product::MultiCaretesianProduct, permutations::Permutations};
 use thousands::Separable;
 
 #[derive(Parser)]
@@ -57,8 +57,19 @@ fn main() {
                 println!("No passphrase found");
             }
         }
-        Command::MultiCartesianProduct(subcommand) => {
-            todo!()
+
+        Command::MultiCartesianProduct(SubCommand::Count { words }) => {
+            let app = MultiCaretesianProduct::new_from_env(words);
+            println!("{}", app.count().separate_with_commas());
+        }
+        Command::MultiCartesianProduct(SubCommand::Run { words }) => {
+            let app = MultiCaretesianProduct::new_from_env(words);
+
+            if let Some(passphrase) = app.run() {
+                println!("Passphrase FOUND!: {}", passphrase);
+            } else {
+                println!("No passphrase found");
+            }
         }
     }
 }

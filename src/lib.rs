@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 pub mod fingerprint;
 pub mod math;
+pub mod multi_cartesian_product;
 pub mod permutations;
 
 pub const PASSPHRASE_LENGTH: usize = 7;

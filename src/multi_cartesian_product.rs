@@ -1,21 +1,20 @@
-use crate::{fingerprint, math, Fingerprint, Seed, Words};
+use crate::{fingerprint, Fingerprint, Seed, Words};
 use itertools::Itertools;
 use rayon::prelude::*;
 
-#[derive(Debug, Clone)]
-pub struct Permutations {
+pub struct MultiCaretesianProduct {
     pub seed: Seed,
-    pub words: Vec<String>,
+    pub words: Words,
     pub fingerprint: Fingerprint,
 }
 
-impl Default for Permutations {
+impl Default for MultiCaretesianProduct {
     fn default() -> Self {
         Self::new(Words::default(), Seed::default(), Fingerprint::default())
     }
 }
 
-impl Permutations {
+impl MultiCaretesianProduct {
     pub fn new_from_env(words: Option<String>) -> Self {
         if let Some(words) = words {
             let words = Words::new_from_env(&words);
@@ -31,26 +30,25 @@ impl Permutations {
 
     pub fn new(words: Words, seed: Seed, fingerprint: Fingerprint) -> Self {
         Self {
-            words: words.0.into_iter().flatten().collect(),
+            words,
             seed,
             fingerprint,
         }
     }
 
     pub fn count(&self) -> u128 {
-        math::permuations(self.words.len() as u128, 7)
+        self.words.0.iter().multi_cartesian_product().count() as u128
     }
 
     pub fn run(self) -> Option<String> {
-        log::info!("Starting permutations: {}", self.count());
-        let words_len = self.words.len();
+        log::info!("Starting multi cartesian product: {}", self.count());
         let target_fingerprint: [u8; 4] = self.fingerprint.0;
 
         let seed = &self.seed.0;
-
         self.words
+            .0
             .into_iter()
-            .permutations(words_len)
+            .multi_cartesian_product()
             .par_bridge()
             .find_first(|passphrase| {
                 let passphrase_string = passphrase.join("");
