@@ -20,7 +20,7 @@ pub fn create_xpub(seed: impl AsRef<str>, passphrase: impl AsRef<str>) -> eyre::
     let seed = mneomic.to_seed(passphrase.as_ref());
 
     let child_path = "m/84'/0'/0'";
-    let child_xprv = XPrv::derive_from_path(&seed, &child_path.parse()?)?;
+    let child_xprv = XPrv::derive_from_path(seed, &child_path.parse()?)?;
 
     // Get the `XPub` associated with `child_xprv`.
     let xpub = child_xprv.public_key();
