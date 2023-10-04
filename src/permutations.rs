@@ -1,4 +1,5 @@
 use crate::{fingerprint, math, Fingerprint, Seed, Words};
+use crossbeam::channel::Sender;
 use itertools::Itertools;
 use rayon::prelude::*;
 
@@ -7,6 +8,7 @@ pub struct Permutations {
     pub seed: Seed,
     pub words: Vec<String>,
     pub fingerprint: Fingerprint,
+    pub progress: Option<Sender<()>>,
 }
 
 impl Default for Permutations {
@@ -30,7 +32,17 @@ impl Permutations {
             words: words.0.into_iter().flatten().collect(),
             seed,
             fingerprint,
+            progress: None,
         }
+    }
+
+    pub fn with_progress(mut self, progress: Sender<()>) -> Self {
+        self.progress = Some(progress);
+        self
+    }
+
+    pub fn set_progress(&mut self, progress: Sender<()>) {
+        self.progress = Some(progress);
     }
 
     pub fn count(&self) -> u128 {
@@ -51,6 +63,10 @@ impl Permutations {
             .find_first(|passphrase| {
                 let passphrase_string = passphrase.join("");
                 let fingerprint = fingerprint::create_fingerprint(seed, passphrase_string).unwrap();
+
+                if let Some(progress) = &self.progress {
+                    progress.send(()).unwrap();
+                }
 
                 target_fingerprint == fingerprint
             })

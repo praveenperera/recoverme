@@ -1,5 +1,8 @@
 use clap::{Parser, Subcommand};
-use combinator::{multi_cartesian_product::MultiCaretesianProduct, permutations::Permutations};
+use combinator::{
+    multi_cartesian_product::MultiCaretesianProduct, permutations::Permutations,
+    progress_bar::ProgressBar,
+};
 use thousands::Separable;
 
 #[derive(Parser)]
@@ -51,17 +54,24 @@ fn main() {
     match cli.command {
         Command::Permutations(SubCommand::Count { words, seed }) => {
             let app = Permutations::new_from_env(words, seed);
-
             println!("{}", app.count().separate_with_commas());
         }
         Command::Permutations(SubCommand::Run { words, seed }) => {
             let app = Permutations::new_from_env(words, seed);
+            let count = app.count();
+            let progress_bar = ProgressBar::new(count);
 
-            if let Some(passphrase) = app.run() {
-                println!("Passphrase FOUND!: {}", passphrase);
+            let app = app.with_progress(progress_bar.sender.clone());
+            progress_bar.listen();
+
+            let message = if let Some(passphrase) = app.run() {
+                format!("Passphrase FOUND!: {}", passphrase)
             } else {
-                println!("No passphrase found");
-            }
+                "No passphrase found".to_string()
+            };
+
+            println!("{message}");
+            std::fs::write("passphrase.txt", message).unwrap();
         }
 
         Command::MultiCartesianProduct(SubCommand::Count { words, seed }) => {
@@ -71,11 +81,20 @@ fn main() {
         Command::MultiCartesianProduct(SubCommand::Run { words, seed }) => {
             let app = MultiCaretesianProduct::new_from_env(words, seed);
 
-            if let Some(passphrase) = app.run() {
-                println!("Passphrase FOUND!: {}", passphrase);
+            let count = app.count();
+            let progress_bar = ProgressBar::new(count);
+
+            let app = app.with_progress(progress_bar.sender.clone());
+            progress_bar.listen();
+
+            let message = if let Some(passphrase) = app.run() {
+                format!("Passphrase FOUND!: {}", passphrase)
             } else {
-                println!("No passphrase found");
-            }
+                "No passphrase found".to_string()
+            };
+
+            println!("{message}");
+            std::fs::write("passphrase.txt", message).unwrap();
         }
     }
 }

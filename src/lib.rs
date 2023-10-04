@@ -6,6 +6,7 @@ pub mod fingerprint;
 pub mod math;
 pub mod multi_cartesian_product;
 pub mod permutations;
+pub mod progress_bar;
 pub mod words;
 
 pub const PASSPHRASE_LENGTH: usize = 7;
