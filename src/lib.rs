@@ -22,10 +22,10 @@ pub struct Fingerprint([u8; 4]);
 impl Words {
     pub fn new_from_env(env: &str) -> Self {
         let words = match env {
-            "WORDS" => serde_json::from_str(WORDS),
-            "MORE_WORDS" => serde_json::from_str(MORE_WORDS),
-            "ONLY_WORDS" => serde_json::from_str(ONLY_WORDS),
-            "MOST_WORDS" => serde_json::from_str(MOST_WORDS),
+            "WORDS" => serde_json::from_slice(WORDS),
+            "MORE_WORDS" => serde_json::from_slice(MORE_WORDS),
+            "ONLY_WORDS" => serde_json::from_slice(ONLY_WORDS),
+            "MOST_WORDS" => serde_json::from_slice(MOST_WORDS),
             other => {
                 let json = std::env::var(other).expect("env var not found");
                 serde_json::from_str(&json)
