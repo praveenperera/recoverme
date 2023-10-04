@@ -1,10 +1,12 @@
 use derive_more::{Deref, From};
 use serde::{Deserialize, Serialize};
+use words::{MORE_WORDS, MOST_WORDS, ONLY_WORDS, WORDS};
 
 pub mod fingerprint;
 pub mod math;
 pub mod multi_cartesian_product;
 pub mod permutations;
+pub mod words;
 
 pub const PASSPHRASE_LENGTH: usize = 7;
 
@@ -19,8 +21,18 @@ pub struct Fingerprint([u8; 4]);
 
 impl Words {
     pub fn new_from_env(env: &str) -> Self {
-        let words_json = std::env::var(env).unwrap();
-        serde_json::from_str(&words_json).unwrap()
+        let words = match env {
+            "WORDS" => serde_json::from_str(WORDS),
+            "MORE_WORDS" => serde_json::from_str(MORE_WORDS),
+            "ONLY_WORDS" => serde_json::from_str(ONLY_WORDS),
+            "MOST_WORDS" => serde_json::from_str(MOST_WORDS),
+            other => {
+                let json = std::env::var(other).expect("env var not found");
+                serde_json::from_str(&json)
+            }
+        };
+
+        words.expect("failed to parse words")
     }
 }
 
