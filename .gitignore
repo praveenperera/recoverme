@@ -1,2 +1,4 @@
 /target
 output.txt
+flamegraph.svg
+profile.json

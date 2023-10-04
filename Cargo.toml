@@ -41,5 +41,10 @@ codegen-units = 1
 lto = "fat"
 opt-level = 3
 
+
+[profile.profiling]
+inherits = "release"
+debug = true
+
 [dev-dependencies]
 pretty_assertions_sorted = "1.2"
