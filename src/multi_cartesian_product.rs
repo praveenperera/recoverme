@@ -56,6 +56,6 @@ impl MultiCaretesianProduct {
 
                 target_fingerprint == fingerprint
             })
-            .map(|passphrase| passphrase.join(""))
+            .map(|passphrase| passphrase.join(" "))
     }
 }
