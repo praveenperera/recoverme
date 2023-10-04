@@ -16,13 +16,9 @@ impl Default for Permutations {
 }
 
 impl Permutations {
-    pub fn new_from_env(words: Option<String>) -> Self {
-        if let Some(words) = words {
-            let words = Words::new_from_env(&words);
-            Self::new_with_words(words)
-        } else {
-            Self::default()
-        }
+    pub fn new_from_env(words: String, seed: String) -> Self {
+        let words = Words::new_from_env(&words);
+        Self::new(words, seed.into(), Fingerprint::default())
     }
 
     pub fn new_with_words(words: Words) -> Self {

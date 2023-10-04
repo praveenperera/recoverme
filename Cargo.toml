@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 # cli
-clap = { version = "4.4", features = ["derive"] }
+clap = { version = "4.4", features = ["derive", "env"] }
 ctrlc = "3.4.1"
 
 # parallel 

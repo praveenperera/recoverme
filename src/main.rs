@@ -23,13 +23,19 @@ pub enum SubCommand {
     #[command(about = "Run the program")]
     Run {
         #[arg(short, long)]
-        words: Option<String>,
+        words: String,
+
+        #[arg(short, long, env)]
+        seed: String,
     },
 
     #[command(about = "Count the number of options")]
     Count {
         #[arg(short, long)]
-        words: Option<String>,
+        words: String,
+
+        #[arg(short, long, env)]
+        seed: String,
     },
 }
 
@@ -43,13 +49,13 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Command::Permutations(SubCommand::Count { words }) => {
-            let app = Permutations::new_from_env(words);
+        Command::Permutations(SubCommand::Count { words, seed }) => {
+            let app = Permutations::new_from_env(words, seed);
 
             println!("{}", app.count().separate_with_commas());
         }
-        Command::Permutations(SubCommand::Run { words }) => {
-            let app = Permutations::new_from_env(words);
+        Command::Permutations(SubCommand::Run { words, seed }) => {
+            let app = Permutations::new_from_env(words, seed);
 
             if let Some(passphrase) = app.run() {
                 println!("Passphrase FOUND!: {}", passphrase);
@@ -58,12 +64,12 @@ fn main() {
             }
         }
 
-        Command::MultiCartesianProduct(SubCommand::Count { words }) => {
-            let app = MultiCaretesianProduct::new_from_env(words);
+        Command::MultiCartesianProduct(SubCommand::Count { words, seed }) => {
+            let app = MultiCaretesianProduct::new_from_env(words, seed);
             println!("{}", app.count().separate_with_commas());
         }
-        Command::MultiCartesianProduct(SubCommand::Run { words }) => {
-            let app = MultiCaretesianProduct::new_from_env(words);
+        Command::MultiCartesianProduct(SubCommand::Run { words, seed }) => {
+            let app = MultiCaretesianProduct::new_from_env(words, seed);
 
             if let Some(passphrase) = app.run() {
                 println!("Passphrase FOUND!: {}", passphrase);
