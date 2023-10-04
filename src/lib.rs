@@ -37,6 +37,13 @@ impl Words {
     }
 }
 
+impl From<String> for Fingerprint {
+    fn from(value: String) -> Self {
+        let target_fingerprint = hex::decode(value).unwrap()[..4].try_into().unwrap();
+        Self(target_fingerprint)
+    }
+}
+
 impl Default for Words {
     fn default() -> Self {
         Self::new_from_env("WORDS")

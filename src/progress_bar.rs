@@ -39,7 +39,7 @@ impl ProgressBar {
                 current += 1;
             }
 
-            progress_bar.finish_and_clear();
+            progress_bar.finish();
         });
     }
 }

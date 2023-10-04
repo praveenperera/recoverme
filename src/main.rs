@@ -30,6 +30,9 @@ pub enum SubCommand {
 
         #[arg(short, long, env)]
         seed: String,
+
+        #[arg(short, long, env)]
+        fingerprint: Option<String>,
     },
 
     #[command(about = "Count the number of options")]
@@ -39,6 +42,9 @@ pub enum SubCommand {
 
         #[arg(short, long, env)]
         seed: String,
+
+        #[arg(short, long, env)]
+        fingerprint: Option<String>,
     },
 }
 
@@ -52,12 +58,20 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Command::Permutations(SubCommand::Count { words, seed }) => {
-            let app = Permutations::new_from_env(words, seed);
+        Command::Permutations(SubCommand::Count {
+            words,
+            seed,
+            fingerprint,
+        }) => {
+            let app = Permutations::new_from_env(words, seed, fingerprint);
             println!("{}", app.count().separate_with_commas());
         }
-        Command::Permutations(SubCommand::Run { words, seed }) => {
-            let app = Permutations::new_from_env(words, seed);
+        Command::Permutations(SubCommand::Run {
+            words,
+            seed,
+            fingerprint,
+        }) => {
+            let app = Permutations::new_from_env(words, seed, fingerprint);
             let count = app.count();
             let progress_bar = ProgressBar::new(count);
 
@@ -74,12 +88,20 @@ fn main() {
             std::fs::write("passphrase.txt", message).unwrap();
         }
 
-        Command::MultiCartesianProduct(SubCommand::Count { words, seed }) => {
-            let app = MultiCaretesianProduct::new_from_env(words, seed);
+        Command::MultiCartesianProduct(SubCommand::Count {
+            words,
+            seed,
+            fingerprint,
+        }) => {
+            let app = MultiCaretesianProduct::new_from_env(words, seed, fingerprint);
             println!("{}", app.count().separate_with_commas());
         }
-        Command::MultiCartesianProduct(SubCommand::Run { words, seed }) => {
-            let app = MultiCaretesianProduct::new_from_env(words, seed);
+        Command::MultiCartesianProduct(SubCommand::Run {
+            words,
+            seed,
+            fingerprint,
+        }) => {
+            let app = MultiCaretesianProduct::new_from_env(words, seed, fingerprint);
 
             let count = app.count();
             let progress_bar = ProgressBar::new(count);
