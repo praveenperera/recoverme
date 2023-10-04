@@ -1,4 +1,4 @@
-use crate::{fingerprint, math, Fingerprint, Seed, Words};
+use crate::{fingerprint, math, Fingerprint, Seed, Words, PASSPHRASE_LENGTH};
 use crossbeam::channel::Sender;
 use itertools::Itertools;
 use rayon::prelude::*;
@@ -18,9 +18,11 @@ impl Default for Permutations {
 }
 
 impl Permutations {
-    pub fn new_from_env(words: String, seed: String) -> Self {
+    pub fn new_from_env(words: String, seed: String, fingerprint: Option<String>) -> Self {
         let words = Words::new_from_env(&words);
-        Self::new(words, seed.into(), Fingerprint::default())
+        let fingerprint = fingerprint.map(Into::into).unwrap_or_default();
+
+        Self::new(words, seed.into(), fingerprint)
     }
 
     pub fn new_with_words(words: Words) -> Self {
@@ -46,12 +48,12 @@ impl Permutations {
     }
 
     pub fn count(&self) -> u128 {
-        math::permuations(self.words.len() as u128, 7)
+        math::permuations(self.words.len() as u128, PASSPHRASE_LENGTH as u128)
     }
 
     pub fn run(self) -> Option<String> {
         log::info!("Starting permutations: {}", self.count());
-        let words_len = self.words.len();
+        let words_len = PASSPHRASE_LENGTH;
         let target_fingerprint: [u8; 4] = self.fingerprint.0;
 
         let seed = &self.seed.0;
@@ -60,7 +62,7 @@ impl Permutations {
             .into_iter()
             .permutations(words_len)
             .par_bridge()
-            .find_first(|passphrase| {
+            .find_any(|passphrase| {
                 let passphrase_string = passphrase.join("");
                 let fingerprint = fingerprint::create_fingerprint(seed, passphrase_string).unwrap();
 
