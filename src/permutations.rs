@@ -1,4 +1,4 @@
-use crate::{fingerprint, math, Fingerprint, Seed, Words, PASSPHRASE_LENGTH};
+use crate::{fingerprint, Fingerprint, Seed, Words};
 use crossbeam::channel::Sender;
 use itertools::Itertools;
 use rayon::prelude::*;
@@ -8,7 +8,7 @@ pub struct Permutations {
     pub seed: Seed,
     pub words: Vec<String>,
     pub fingerprint: Fingerprint,
-    pub number_of_words: u16,
+    pub number_of_words: usize,
 
     pub progress: Option<Sender<()>>,
 }
@@ -18,17 +18,17 @@ impl Permutations {
         words: String,
         seed: String,
         fingerprint: String,
-        number_of_words: Option<u16>,
+        number_of_words: Option<usize>,
     ) -> Self {
         let words = Words::new_from_env(&words);
-        let number_of_words = number_of_words.unwrap_or(words.0.len() as u16);
+        let number_of_words = number_of_words.unwrap_or(words.0.len());
         let fingerprint = Fingerprint::from(fingerprint);
 
         Self::new(words, seed.into(), fingerprint, number_of_words)
     }
 
     pub fn new_with_words(words: Words) -> Self {
-        let number_of_words = words.0.len() as u16;
+        let number_of_words = words.0.len();
 
         Self::new(
             words,
@@ -38,7 +38,7 @@ impl Permutations {
         )
     }
 
-    pub fn new(words: Words, seed: Seed, fingerprint: Fingerprint, number_of_words: u16) -> Self {
+    pub fn new(words: Words, seed: Seed, fingerprint: Fingerprint, number_of_words: usize) -> Self {
         Self {
             words: words.0.into_iter().flatten().collect(),
             seed,
@@ -59,19 +59,18 @@ impl Permutations {
     }
 
     pub fn count(&self) -> u128 {
-        math::permuations(self.words.len() as u128, PASSPHRASE_LENGTH as u128)
+        self.words.iter().permutations(self.number_of_words).count() as u128
     }
 
     pub fn run(self) -> Option<String> {
         log::info!("Starting permutations: {}", self.count());
-        let words_len = PASSPHRASE_LENGTH;
         let target_fingerprint: [u8; 4] = self.fingerprint.0;
 
         let seed = &self.seed.0;
 
         self.words
             .into_iter()
-            .permutations(words_len)
+            .permutations(self.number_of_words)
             .par_bridge()
             .find_any(|passphrase| {
                 let passphrase_string = passphrase.join("");

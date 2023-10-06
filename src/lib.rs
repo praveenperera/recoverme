@@ -3,13 +3,10 @@ use serde::{Deserialize, Serialize};
 use words::{MORE_WORDS, MOST_WORDS, ONLY_WORDS, WORDS};
 
 pub mod fingerprint;
-pub mod math;
 pub mod multi_cartesian_product;
 pub mod permutations;
 pub mod progress_bar;
 pub mod words;
-
-pub const PASSPHRASE_LENGTH: usize = 7;
 
 #[derive(Debug, Clone, Serialize, Deserialize, From, Deref)]
 pub struct Words(Vec<Vec<String>>);

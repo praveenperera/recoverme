@@ -35,7 +35,7 @@ pub enum SubCommand {
         fingerprint: String,
 
         #[arg(short, long, env)]
-        number_of_words: Option<u16>,
+        number_of_words: Option<usize>,
     },
 
     #[command(about = "Count the number of options")]
@@ -50,7 +50,7 @@ pub enum SubCommand {
         fingerprint: String,
 
         #[arg(short, long, env)]
-        number_of_words: Option<u16>,
+        number_of_words: Option<usize>,
     },
 }
 
