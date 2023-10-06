@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cargo build --release;  
-rm  /usr/local/bin/combinator; 
-ln -s "$(pwd)/target/release/combinator" /usr/local/bin
+rm  /usr/local/bin/recoverme; 
+ln -s "$(pwd)/target/release/recoverme" /usr/local/bin

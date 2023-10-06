@@ -255,30 +255,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 
 [[package]]
-name = "combinator"
-version = "0.1.0"
-dependencies = [
- "bip32",
- "bip39",
- "clap",
- "color-eyre",
- "crossbeam",
- "ctrlc",
- "derive_more",
- "eyre",
- "hex",
- "indicatif",
- "itertools",
- "log",
- "pretty_assertions_sorted",
- "pretty_env_logger",
- "rayon",
- "serde",
- "serde_json",
- "thousands",
-]
-
-[[package]]
 name = "console"
 version = "0.15.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -911,6 +887,30 @@ checksum = "5ce3fb6ad83f861aac485e76e1985cd109d9a3713802152be56c3b1f0e0658ed"
 dependencies = [
  "crossbeam-deque",
  "crossbeam-utils",
+]
+
+[[package]]
+name = "recoverme"
+version = "0.1.0"
+dependencies = [
+ "bip32",
+ "bip39",
+ "clap",
+ "color-eyre",
+ "crossbeam",
+ "ctrlc",
+ "derive_more",
+ "eyre",
+ "hex",
+ "indicatif",
+ "itertools",
+ "log",
+ "pretty_assertions_sorted",
+ "pretty_env_logger",
+ "rayon",
+ "serde",
+ "serde_json",
+ "thousands",
 ]
 
 [[package]]

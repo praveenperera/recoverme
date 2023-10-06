@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use combinator::{
+use recoverme::{
     multi_cartesian_product::MultiCaretesianProduct, permutations::Permutations,
     progress_bar::ProgressBar,
 };
