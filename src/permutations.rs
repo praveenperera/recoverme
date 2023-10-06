@@ -8,32 +8,43 @@ pub struct Permutations {
     pub seed: Seed,
     pub words: Vec<String>,
     pub fingerprint: Fingerprint,
+    pub number_of_words: u16,
+
     pub progress: Option<Sender<()>>,
 }
 
-impl Default for Permutations {
-    fn default() -> Self {
-        Self::new(Words::default(), Seed::default(), Fingerprint::default())
-    }
-}
-
 impl Permutations {
-    pub fn new_from_env(words: String, seed: String, fingerprint: Option<String>) -> Self {
+    pub fn new_from_env(
+        words: String,
+        seed: String,
+        fingerprint: String,
+        number_of_words: Option<u16>,
+    ) -> Self {
         let words = Words::new_from_env(&words);
-        let fingerprint = fingerprint.map(Into::into).unwrap_or_default();
+        let number_of_words = number_of_words.unwrap_or(words.0.len() as u16);
+        let fingerprint = Fingerprint::from(fingerprint);
 
-        Self::new(words, seed.into(), fingerprint)
+        Self::new(words, seed.into(), fingerprint, number_of_words)
     }
 
     pub fn new_with_words(words: Words) -> Self {
-        Self::new(words, Seed::default(), Fingerprint::default())
+        let number_of_words = words.0.len() as u16;
+
+        Self::new(
+            words,
+            Seed::default(),
+            Fingerprint::default(),
+            number_of_words,
+        )
     }
 
-    pub fn new(words: Words, seed: Seed, fingerprint: Fingerprint) -> Self {
+    pub fn new(words: Words, seed: Seed, fingerprint: Fingerprint, number_of_words: u16) -> Self {
         Self {
             words: words.0.into_iter().flatten().collect(),
             seed,
             fingerprint,
+            number_of_words,
+
             progress: None,
         }
     }
@@ -73,5 +84,36 @@ impl Permutations {
                 target_fingerprint == fingerprint
             })
             .map(|passphrase| passphrase.join(" "))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use pretty_assertions_sorted::assert_eq;
+
+    // expensive test
+    // TODO: use feature to exclude from regular testing
+    #[test]
+    fn find_with_no_combinations() {
+        let words: Words = vec![
+            vec!["benefit"],
+            vec!["wife"],
+            vec!["soccer"],
+            vec!["rookie"],
+            vec!["nation"],
+            vec!["special"],
+            vec!["child"],
+        ]
+        .into();
+
+        let seed = "build since save grit begin key leisure similar royal diagram warfare execute laptop dress occur sword use soon above obtain beyond merry notable typical";
+        let fingerprint: [u8; 4] = hex::decode("af849feb").unwrap()[..4].try_into().unwrap();
+        let app = Permutations::new(words, seed.to_string().into(), fingerprint.into(), 7);
+
+        assert_eq!(
+            app.run(),
+            Some("benefit wife soccer rookie nation special child".to_string())
+        );
     }
 }

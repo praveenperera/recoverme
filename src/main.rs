@@ -32,7 +32,10 @@ pub enum SubCommand {
         seed: String,
 
         #[arg(short, long, env)]
-        fingerprint: Option<String>,
+        fingerprint: String,
+
+        #[arg(short, long, env)]
+        number_of_words: Option<u16>,
     },
 
     #[command(about = "Count the number of options")]
@@ -44,7 +47,10 @@ pub enum SubCommand {
         seed: String,
 
         #[arg(short, long, env)]
-        fingerprint: Option<String>,
+        fingerprint: String,
+
+        #[arg(short, long, env)]
+        number_of_words: Option<u16>,
     },
 }
 
@@ -62,16 +68,18 @@ fn main() {
             words,
             seed,
             fingerprint,
+            number_of_words,
         }) => {
-            let app = Permutations::new_from_env(words, seed, fingerprint);
+            let app = Permutations::new_from_env(words, seed, fingerprint, number_of_words);
             println!("{}", app.count().separate_with_commas());
         }
         Command::Permutations(SubCommand::Run {
             words,
             seed,
             fingerprint,
+            number_of_words,
         }) => {
-            let app = Permutations::new_from_env(words, seed, fingerprint);
+            let app = Permutations::new_from_env(words, seed, fingerprint, number_of_words);
             let count = app.count();
             let progress_bar = ProgressBar::new(count);
 
@@ -92,6 +100,7 @@ fn main() {
             words,
             seed,
             fingerprint,
+            ..
         }) => {
             let app = MultiCaretesianProduct::new_from_env(words, seed, fingerprint);
             println!("{}", app.count().separate_with_commas());
@@ -100,6 +109,7 @@ fn main() {
             words,
             seed,
             fingerprint,
+            ..
         }) => {
             let app = MultiCaretesianProduct::new_from_env(words, seed, fingerprint);
 

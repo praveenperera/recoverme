@@ -17,10 +17,10 @@ impl Default for MultiCaretesianProduct {
 }
 
 impl MultiCaretesianProduct {
-    pub fn new_from_env(words: String, seed: String, fingerprint: Option<String>) -> Self {
-        let fingerprint = fingerprint.map(Into::into).unwrap_or_default();
-
+    pub fn new_from_env(words: String, seed: String, fingerprint: String) -> Self {
+        let fingerprint = Fingerprint::from(fingerprint);
         let words = Words::new_from_env(&words);
+
         Self::new(words, seed.into(), fingerprint)
     }
 
