@@ -29,14 +29,10 @@ impl ProgressBar {
                 .unwrap()
             );
 
-            let mut current = 0;
-
-            for _ in self.receiver.iter() {
+            for (current, _) in self.receiver.iter().enumerate() {
                 if current % 1000 == 0 {
                     progress_bar.inc(1000);
                 }
-
-                current += 1;
             }
 
             progress_bar.finish();
